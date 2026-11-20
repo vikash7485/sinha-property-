@@ -33,7 +33,7 @@ export async function readProperties() {
     const data = await r.json();
     return Array.isArray(data) ? data : SEED;
   } catch (e) {
-    if (e?.name === "BlobNotFoundError" || /not.?found/i.test(String(e?.message))) return SEED;
+    if (e?.name === "BlobNotFoundError" || /not.?found|does not exist/i.test(String(e?.message))) return SEED;
     throw e;
   }
 }
