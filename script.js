@@ -117,6 +117,17 @@ nav.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setMenu
 document.addEventListener("keydown", e => { if (e.key === "Escape") setMenu(false); });
 window.matchMedia("(min-width: 900px)").addEventListener("change", e => { if (e.matches) setMenu(false); });
 
+// Mobile contact bar: slide it away while the contact section is on screen
+const mobileBar = document.getElementById("mobileBar");
+if (mobileBar && "IntersectionObserver" in window) {
+  const visible = new Set();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => e.isIntersecting ? visible.add(e.target) : visible.delete(e.target));
+    mobileBar.classList.toggle("away", visible.size > 0);
+  }, { threshold: 0.15 });
+  ["enquiryForm", "contact"].forEach(id => { const el = document.getElementById(id); if (el) io.observe(el.querySelector(".info-list") || el); });
+}
+
 // Header shadow
 const header = document.getElementById("header");
 window.addEventListener("scroll", () => header.classList.toggle("scrolled", window.scrollY > 10));

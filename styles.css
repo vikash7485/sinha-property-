@@ -16,7 +16,7 @@
   --radius: 14px;
   --shadow: 0 8px 24px rgba(15, 42, 68, .08);
   --header-h: 64px;
-  --bar-h: 64px;           /* mobile bottom action bar */
+  --bar-h: 76px;           /* space kept for the floating mobile contact bar */
   --gutter: 16px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -229,15 +229,26 @@ select:focus, input:focus, textarea:focus { outline: 2px solid var(--gold); bord
 .footer-bottom { border-top: 1px solid rgba(255,255,255,.08); margin-top: 32px; padding-block: 18px; font-size: .85rem; text-align: center; }
 
 /* Mobile bottom action bar (phones/tablets) */
+/* Floating rounded bar, slides away when the contact form is on screen */
 .mobile-bar {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
-  display: grid; grid-template-columns: 1fr 1fr 1fr; background: #fff; border-top: 1px solid var(--line);
-  box-shadow: 0 -6px 20px rgba(15,42,68,.08); padding-bottom: env(safe-area-inset-bottom);
+  position: fixed; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 60;
+  display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: 6px; padding: 6px;
+  background: rgba(255,255,255,.97); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--line); border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(15,42,68,.18);
+  transition: transform .3s ease, opacity .3s ease;
 }
-.mobile-bar a { min-height: var(--bar-h); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: .8rem; font-weight: 600; color: var(--navy); }
-.mobile-bar a .ico { font-size: 1.25rem; line-height: 1; }
-.mobile-bar a.wa { background: #25d366; color: #fff; }
-.mobile-bar a.enq { background: var(--navy); color: #fff; }
+.mobile-bar.away { transform: translateY(calc(100% + 24px)); opacity: 0; pointer-events: none; }
+body.menu-open .mobile-bar { transform: translateY(calc(100% + 24px)); opacity: 0; pointer-events: none; }
+.mobile-bar a {
+  min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 7px;
+  border-radius: 12px; font-size: .92rem; font-weight: 600; letter-spacing: .01em; transition: transform .1s, filter .2s;
+}
+.mobile-bar a:active { transform: scale(.96); }
+.mobile-bar svg { flex: none; }
+.mobile-bar .mb-call { background: #eef2f7; color: var(--navy); }
+.mobile-bar .mb-wa { background: #25d366; color: #fff; box-shadow: 0 4px 12px rgba(37,211,102,.35); }
+.mobile-bar .mb-enq { background: var(--navy); color: #fff; }
 
 /* Floating buttons (desktop only) */
 .float-actions { display: none; position: fixed; right: 20px; bottom: 20px; gap: 12px; z-index: 60; }
