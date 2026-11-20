@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0f2a44" />
+  <title>Admin · Sinha Property Solution</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --navy:#0f2a44; --navy-2:#163a5c; --gold:#c9a14a; --gold-2:#a87f2c; --ink:#1d2733; --muted:#56636f; --line:#e3e7ec; --bg:#f4f6f9; --red:#c0392b; --green:#1e8e4e; --radius:14px; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    [hidden] { display:none !important; }
+    body { font-family:Inter,system-ui,sans-serif; font-size:16px; color:var(--ink); background:var(--bg); line-height:1.5; min-height:100vh; padding-bottom:env(safe-area-inset-bottom); }
+    button, input, select, textarea { font:inherit; }
+    a { color:inherit; }
+    .wrap { width:100%; max-width:960px; margin-inline:auto; padding-inline:16px; }
+
+    /* Top bar */
+    .top { background:var(--navy); color:#fff; position:sticky; top:0; z-index:20; }
+    .top .wrap { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:60px; }
+    .brand { display:flex; align-items:center; gap:10px; min-width:0; }
+    .mark { flex:none; width:38px; height:38px; border-radius:9px; border:2px solid var(--gold); color:var(--gold); display:grid; place-items:center; font:700 1rem "Playfair Display",serif; }
+    .brand b { display:block; font-size:.98rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .brand small { color:#b9c7d5; font-size:.78rem; }
+    .top-actions { display:flex; gap:6px; flex:none; }
+
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:46px; padding:10px 18px; border-radius:10px; border:2px solid transparent; font-weight:600; cursor:pointer; text-decoration:none; -webkit-tap-highlight-color:transparent; }
+    .btn:disabled { opacity:.6; cursor:wait; }
+    .btn-gold { background:var(--gold); color:#fff; }
+    .btn-navy { background:var(--navy); color:#fff; }
+    .btn-ghost { background:transparent; color:#fff; border-color:rgba(255,255,255,.35); }
+    .btn-light { background:#fff; color:var(--navy); border-color:var(--line); }
+    .btn-danger { background:#fff; color:var(--red); border-color:#f1c9c4; }
+    .btn-block { width:100%; }
+    .btn-sm { min-height:44px; padding:8px 12px; font-size:.92rem; }
+
+    /* Login */
+    .login { min-height:100vh; display:grid; place-items:center; padding:24px 16px; background:linear-gradient(160deg,var(--navy),var(--navy-2)); }
+    .login-card { width:100%; max-width:380px; background:#fff; border-radius:18px; padding:28px 22px; box-shadow:0 20px 50px rgba(0,0,0,.3); display:grid; gap:14px; }
+    .login-card h1 { font:700 1.5rem "Playfair Display",serif; color:var(--navy); }
+    .login-card p { color:var(--muted); font-size:.95rem; }
+
+    label { display:grid; gap:6px; font-size:.9rem; font-weight:600; color:var(--navy); }
+    input, select, textarea { width:100%; min-height:48px; padding:12px 14px; border:1px solid #cfd6de; border-radius:10px; font-size:16px; color:var(--ink); background:#fff; }
+    input:focus, select:focus, textarea:focus { outline:2px solid var(--gold); border-color:transparent; }
+    .hint { font-weight:400; color:var(--muted); font-size:.82rem; }
+    .err { color:var(--red); font-size:.9rem; font-weight:600; }
+
+    /* Dashboard */
+    .bar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; padding:18px 0 12px; }
+    .bar h2 { font:700 1.35rem "Playfair Display",serif; color:var(--navy); }
+    .bar p { color:var(--muted); font-size:.9rem; }
+    .filters { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+    .filters input { grid-column:1 / -1; }
+
+    .list { display:grid; gap:12px; padding-bottom:110px; }
+    .item { background:#fff; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; display:grid; grid-template-columns:96px 1fr; }
+    .item.is-hidden { opacity:.6; }
+    .thumb { background:#e6eaef center/cover no-repeat; min-height:100%; position:relative; }
+    .thumb span { position:absolute; left:6px; top:6px; background:var(--gold); color:#fff; font-size:.68rem; font-weight:700; padding:2px 6px; border-radius:5px; text-transform:uppercase; }
+    .info { padding:12px; min-width:0; display:grid; gap:2px; }
+    .info b { font-size:1rem; color:var(--navy); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .info .meta { font-size:.85rem; color:var(--muted); }
+    .info .price { font-weight:700; }
+    .pill { display:inline-block; font-size:.72rem; font-weight:700; padding:2px 8px; border-radius:99px; background:#eef1f5; color:var(--muted); margin-left:4px; vertical-align:middle; }
+    .actions { grid-column:1 / -1; display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--line); }
+    .actions button { min-height:46px; background:none; border:0; font-weight:600; color:var(--navy); cursor:pointer; }
+    .actions button + button { border-left:1px solid var(--line); }
+    .actions .del { color:var(--red); }
+    .empty { text-align:center; color:var(--muted); padding:40px 10px; }
+
+    .fab { position:fixed; right:16px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:15; box-shadow:0 10px 24px rgba(0,0,0,.25); border-radius:99px; padding-inline:22px; min-height:54px; }
+
+    /* Editor sheet */
+    .sheet-bg { position:fixed; inset:0; background:rgba(10,20,35,.55); z-index:30; display:flex; align-items:flex-end; justify-content:center; }
+    .sheet { background:#fff; width:100%; max-width:640px; max-height:94vh; max-height:94dvh; overflow-y:auto; border-radius:18px 18px 0 0; padding:18px 16px calc(18px + env(safe-area-inset-bottom)); display:grid; gap:14px; }
+    .sheet-head { display:flex; justify-content:space-between; align-items:center; position:sticky; top:-18px; background:#fff; padding:6px 0; z-index:1; }
+    .sheet-head h3 { font:700 1.25rem "Playfair Display",serif; color:var(--navy); }
+    .x { width:46px; height:46px; border:0; background:#f1f3f6; border-radius:10px; font-size:1.3rem; cursor:pointer; }
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .photo { display:grid; gap:10px; }
+    .preview { aspect-ratio:16/10; border-radius:12px; background:#eef1f5 center/cover no-repeat; display:grid; place-items:center; color:var(--muted); font-size:.9rem; border:1px dashed #cfd6de; }
+    .photo-btns { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .file-btn { position:relative; overflow:hidden; }
+    .file-btn input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+    .check { display:flex; align-items:center; gap:10px; font-weight:500; min-height:44px; }
+    .check input { width:22px; height:22px; min-height:0; }
+    .sheet-foot { display:grid; grid-template-columns:1fr 2fr; gap:10px; position:sticky; bottom:calc(-18px - env(safe-area-inset-bottom)); background:#fff; padding:10px 0 4px; }
+
+    /* Toast */
+    .toast { position:fixed; left:50%; bottom:90px; transform:translateX(-50%); background:var(--ink); color:#fff; padding:12px 18px; border-radius:10px; z-index:50; font-size:.95rem; max-width:calc(100% - 32px); text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.25); }
+    .toast.ok { background:var(--green); }
+    .toast.bad { background:var(--red); }
+
+    @media (min-width:640px) {
+      .filters { grid-template-columns:2fr 1fr 1fr; }
+      .filters input { grid-column:auto; }
+      .item { grid-template-columns:140px 1fr; }
+      .sheet-bg { align-items:center; padding:20px; }
+      .sheet { border-radius:18px; max-height:90vh; padding:22px 24px; }
+      .sheet-head { top:-22px; }
+      .sheet-foot { bottom:-22px; }
+    }
+    @media (min-width:900px) {
+      .list { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login -->
+  <section class="login" id="loginView">
+    <form class="login-card" id="loginForm">
+      <div class="mark" style="background:var(--navy)">SP</div>
+      <h1>Admin Login</h1>
+      <p>Sinha Property Solution — manage your property listings.</p>
+      <label>Password
+        <input type="password" id="pw" autocomplete="current-password" required />
+      </label>
+      <p class="err" id="loginErr" hidden></p>
+      <button class="btn btn-gold btn-block" id="loginBtn">Log in</button>
+      <a href="/" class="hint" style="text-align:center">← Back to website</a>
+    </form>
+  </section>
+
+  <!-- Dashboard -->
+  <div id="appView" hidden>
+    <header class="top">
+      <div class="wrap">
+        <div class="brand">
+          <div class="mark">SP</div>
+          <div><b>Property Admin</b><small>Sinha Property Solution</small></div>
+        </div>
+        <div class="top-actions">
+          <a class="btn btn-ghost btn-sm" href="/" target="_blank" rel="noopener">View site</a>
+          <button class="btn btn-ghost btn-sm" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="bar">
+        <div>
+          <h2>Your Properties</h2>
+          <p id="summary">Loading…</p>
+        </div>
+      </div>
+      <div class="filters">
+        <input type="search" id="q" placeholder="Search title or locality…" />
+        <select id="fDeal"><option value="">All deals</option><option value="rent">For Rent</option><option value="buy">For Sale</option><option value="lease">For Lease</option></select>
+        <select id="fShow"><option value="">All</option><option value="live">Live on site</option><option value="hidden">Hidden</option></select>
+      </div>
+      <div class="list" id="list"></div>
+    </main>
+
+    <button class="btn btn-gold fab" id="addBtn">＋ Add Property</button>
+  </div>
+
+  <!-- Add / Edit sheet -->
+  <div class="sheet-bg" id="sheetBg" hidden>
+    <form class="sheet" id="editForm" novalidate>
+      <div class="sheet-head">
+        <h3 id="sheetTitle">Add Property</h3>
+        <button type="button" class="x" id="closeSheet" aria-label="Close">✕</button>
+      </div>
+
+      <div class="photo">
+        <div class="preview" id="preview">No photo yet</div>
+        <div class="photo-btns">
+          <span class="btn btn-navy file-btn">📷 Take / choose photo<input type="file" id="file" accept="image/*" /></span>
+          <button type="button" class="btn btn-light" id="removePhoto">Remove photo</button>
+        </div>
+        <label>…or paste a photo link <span class="hint">(optional)</span>
+          <input type="url" name="img" placeholder="https://…" />
+        </label>
+      </div>
+
+      <label>Title *
+        <input name="title" required maxlength="80" placeholder="e.g. 2 BHK Furnished Flat" />
+      </label>
+      <div class="row2">
+        <label>Deal
+          <select name="deal"><option value="rent">For Rent</option><option value="buy">For Sale</option><option value="lease">For Lease</option></select>
+        </label>
+        <label>Type
+          <select name="type"><option value="residential">Flat / House</option><option value="commercial">Shop / Office</option><option value="land">Plot / Land</option><option value="industrial">Warehouse</option></select>
+        </label>
+      </div>
+      <label>Locality *
+        <input name="locality" required maxlength="60" list="localities" placeholder="e.g. Boring Road" />
+        <datalist id="localities"></datalist>
+      </label>
+      <div class="row2">
+        <label>Price
+          <input name="price" maxlength="30" placeholder="₹18,000 or On request" />
+        </label>
+        <label>Per
+          <select name="unit"><option value="/month">/month</option><option value="/year">/year</option><option value="">(total)</option></select>
+        </label>
+      </div>
+      <label>Features <span class="hint">— separate with commas, up to 6</span>
+        <input name="feats" maxlength="200" placeholder="2 Beds, 2 Baths, 1,050 sq ft, Parking" />
+      </label>
+      <label class="check"><input type="checkbox" name="hidden" /> Hide from website (e.g. already rented / sold)</label>
+
+      <p class="err" id="formErr" hidden></p>
+      <div class="sheet-foot">
+        <button type="button" class="btn btn-light" id="cancelBtn">Cancel</button>
+        <button class="btn btn-gold" id="saveBtn">Save Property</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+  const DEAL = { rent: "For Rent", buy: "For Sale", lease: "For Lease" };
+  const TYPE = { residential: "Residential", commercial: "Commercial", land: "Land", industrial: "Industrial" };
+  const BASE_LOCALITIES = ["Boring Road","Kurji","Patliputra Colony","Rajendra Nagar","Fraser Road","Bailey Road","Kankarbagh","Ashiana Nagar","Raja Bazar","Danapur","Bihta"];
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+
+  let key = "";
+  try { key = sessionStorage.getItem("spAdminKey") || ""; } catch {}
+  let props = [];
+  let editingId = null;
+  let photoUrl = "";
+
+  // ---------- helpers ----------
+  async function api(path, opts = {}) {
+    const r = await fetch(path, { ...opts, headers: { "Content-Type": "application/json", "x-admin-key": key, ...(opts.headers || {}) } });
+    const data = await r.json().catch(() => ({}));
+    if (r.status === 401) { logout(); throw new Error("Session expired — please log in again"); }
+    if (!r.ok) throw new Error(data.error || "Something went wrong (" + r.status + ")");
+    return data;
+  }
+  function toast(msg, kind = "ok") {
+    const t = $("toast"); t.textContent = msg; t.className = "toast " + kind; t.hidden = false;
+    clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2600);
+  }
+  function showErr(el, msg) { el.textContent = msg; el.hidden = !msg; }
+
+  // ---------- login ----------
+  $("loginForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const btn = $("loginBtn"); btn.disabled = true; showErr($("loginErr"), "");
+    key = $("pw").value;
+    try {
+      const r = await fetch("/api/login", { method: "POST", headers: { "x-admin-key": key } });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error || "Login failed");
+      try { sessionStorage.setItem("spAdminKey", key); } catch {}
+      $("pw").value = "";
+      await openApp();
+    } catch (err) { key = ""; showErr($("loginErr"), err.message); }
+    finally { btn.disabled = false; }
+  });
+
+  function logout() {
+    key = ""; try { sessionStorage.removeItem("spAdminKey"); } catch {}
+    $("appView").hidden = true; $("loginView").hidden = false; closeSheet();
+  }
+  $("logoutBtn").addEventListener("click", logout);
+
+  async function openApp() {
+    $("loginView").hidden = true; $("appView").hidden = false;
+    $("summary").textContent = "Loading…";
+    props = await api("/api/properties?all=1");
+    renderList();
+  }
+
+  // ---------- list ----------
+  function renderList() {
+    const q = $("q").value.trim().toLowerCase(), deal = $("fDeal").value, show = $("fShow").value;
+    const view = props.filter(p =>
+      (!q || (p.title + " " + p.locality).toLowerCase().includes(q)) &&
+      (!deal || p.deal === deal) &&
+      (!show || (show === "hidden" ? p.hidden : !p.hidden)));
+    const live = props.filter(p => !p.hidden).length;
+    $("summary").textContent = `${props.length} total · ${live} live on website · ${props.length - live} hidden`;
+
+    $("list").innerHTML = view.length ? view.map(p => `
+      <article class="item ${p.hidden ? "is-hidden" : ""}">
+        <div class="thumb" style="background-image:url('${esc(p.img)}')"><span>${DEAL[p.deal]}</span></div>
+        <div class="info">
+          <b>${esc(p.title)}</b>
+          <div class="meta">📍 ${esc(p.locality)} · ${TYPE[p.type]}</div>
+          <div class="price">${esc(p.price)} <span class="meta">${esc(p.unit)}</span>${p.hidden ? '<span class="pill">Hidden</span>' : ""}</div>
+        </div>
+        <div class="actions">
+          <button data-act="edit" data-id="${esc(p.id)}">✏️ Edit</button>
+          <button data-act="toggle" data-id="${esc(p.id)}">${p.hidden ? "👁 Show" : "🙈 Hide"}</button>
+          <button data-act="del" data-id="${esc(p.id)}" class="del">🗑 Delete</button>
+        </div>
+      </article>`).join("")
+      : `<p class="empty">${props.length ? "No property matches this search." : "No properties yet. Tap “＋ Add Property” to add your first one."}</p>`;
+  }
+  ["q", "fDeal", "fShow"].forEach(id => $(id).addEventListener("input", renderList));
+
+  $("list").addEventListener("click", async e => {
+    const b = e.target.closest("button[data-act]"); if (!b) return;
+    const p = props.find(x => x.id === b.dataset.id); if (!p) return;
+    if (b.dataset.act === "edit") return openSheet(p);
+    if (b.dataset.act === "toggle") {
+      await save(props.map(x => x.id === p.id ? { ...x, hidden: !x.hidden } : x), p.hidden ? "Now visible on website" : "Hidden from website");
+    }
+    if (b.dataset.act === "del") {
+      if (!confirm(`Delete “${p.title}”? This cannot be undone.`)) return;
+      await save(props.filter(x => x.id !== p.id), "Property deleted");
+    }
+  });
+
+  async function save(next, okMsg) {
+    try { props = await api("/api/properties", { method: "PUT", body: JSON.stringify({ properties: next }) }); renderList(); toast(okMsg); return true; }
+    catch (err) { toast(err.message, "bad"); return false; }
+  }
+
+  // ---------- editor ----------
+  const form = $("editForm");
+  function setPreview(url) {
+    photoUrl = url || "";
+    const pv = $("preview");
+    pv.style.backgroundImage = photoUrl ? `url('${photoUrl.replace(/'/g, "%27")}')` : "";
+    pv.textContent = photoUrl ? "" : "No photo yet";
+  }
+  function openSheet(p) {
+    editingId = p ? p.id : null;
+    $("sheetTitle").textContent = p ? "Edit Property" : "Add Property";
+    form.reset(); showErr($("formErr"), "");
+    form.title.value = p?.title || "";
+    form.deal.value = p?.deal || "rent";
+    form.type.value = p?.type || "residential";
+    form.locality.value = p?.locality || "";
+    form.price.value = p?.price || "";
+    form.unit.value = p ? (p.unit || "") : "/month";
+    form.feats.value = (p?.feats || []).join(", ");
+    form.hidden.checked = !!p?.hidden;
+    form.img.value = "";
+    setPreview(p?.img || "");
+    const locs = [...new Set([...BASE_LOCALITIES, ...props.map(x => x.locality)])];
+    $("localities").innerHTML = locs.map(l => `<option value="${esc(l)}">`).join("");
+    $("sheetBg").hidden = false; document.body.style.overflow = "hidden";
+    setTimeout(() => form.title.focus({ preventScroll: true }), 50);
+  }
+  function closeSheet() { $("sheetBg").hidden = true; document.body.style.overflow = ""; }
+  $("addBtn").addEventListener("click", () => openSheet(null));
+  $("closeSheet").addEventListener("click", closeSheet);
+  $("cancelBtn").addEventListener("click", closeSheet);
+  $("sheetBg").addEventListener("click", e => { if (e.target === $("sheetBg")) closeSheet(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("sheetBg").hidden) closeSheet(); });
+  // Deal type sets a sensible price unit
+  form.deal.addEventListener("change", () => { form.unit.value = form.deal.value === "buy" ? "" : "/month"; });
+
+  form.img.addEventListener("input", () => { if (/^https:\/\//.test(form.img.value.trim())) setPreview(form.img.value.trim()); });
+  $("removePhoto").addEventListener("click", () => { form.img.value = ""; setPreview(""); $("file").value = ""; });
+
+  // Resize photo in the browser (max 1400px, JPEG) then upload
+  $("file").addEventListener("change", async () => {
+    const f = $("file").files[0]; if (!f) return;
+    const pv = $("preview"); pv.textContent = "Uploading photo…"; pv.style.backgroundImage = "";
+    $("saveBtn").disabled = true;
+    try {
+      const data = await resizeImage(f, 1400, 0.82);
+      const { url } = await api("/api/upload", { method: "POST", body: JSON.stringify({ data }) });
+      form.img.value = ""; setPreview(url); toast("Photo uploaded");
+    } catch (err) { setPreview(photoUrl); toast(err.message || "Could not read this photo", "bad"); }
+    finally { $("saveBtn").disabled = false; $("file").value = ""; }
+  });
+  function resizeImage(file, max, quality) {
+    return new Promise((resolve, reject) => {
+      const img = new Image(), url = URL.createObjectURL(file);
+      img.onload = () => {
+        const s = Math.min(1, max / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        resolve(c.toDataURL("image/jpeg", quality));
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Could not read this photo — try a JPG or PNG")); };
+      img.src = url;
+    });
+  }
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const title = form.title.value.trim(), locality = form.locality.value.trim();
+    if (!title || !locality) return showErr($("formErr"), "Please fill in Title and Locality.");
+    const item = {
+      id: editingId || Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      title, locality,
+      deal: form.deal.value, type: form.type.value,
+      price: form.price.value.trim() || "On request",
+      unit: form.price.value.trim() && !/request/i.test(form.price.value) ? form.unit.value : "",
+      feats: form.feats.value.split(",").map(s => s.trim()).filter(Boolean).slice(0, 6),
+      img: photoUrl, hidden: form.hidden.checked,
+    };
+    const next = editingId ? props.map(p => p.id === editingId ? item : p) : [item, ...props];
+    const btn = $("saveBtn"); btn.disabled = true; btn.textContent = "Saving…";
+    const ok = await save(next, editingId ? "Property updated" : "Property added to website");
+    btn.disabled = false; btn.textContent = "Save Property";
+    if (ok) closeSheet();
+  });
+
+  // Auto-login if this tab already has a session
+  if (key) openApp().catch(() => logout());
+})();
+</script>
+</body>
+</html>
