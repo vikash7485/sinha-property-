@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Sinha Property Solution | Real Estate Consultant in Patna</title>
   <meta name="description" content="Sinha Property Solution (सिन्हा प्रॉपर्टी सोल्यूशन) – trusted real estate consultant in Patna since 2016. Residential & commercial rentals, land leasing, warehouses, plots and property consultancy around Boring Road & Kurji." />
   <meta name="theme-color" content="#0f2a44" />
@@ -61,7 +61,7 @@
         <a href="#contact">Contact</a>
         <a href="#contact" class="btn btn-gold btn-sm nav-cta">Free Consultation</a>
       </nav>
-      <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="nav">☰</button>
     </div>
   </header>
 
@@ -154,7 +154,7 @@
 
   <!-- Property types strip -->
   <section class="types">
-    <div class="container types-inner">
+    <div class="container"><div class="scroll-row types-inner">
       <button class="type-chip" data-type="residential">Flats &amp; Houses</button>
       <button class="type-chip" data-type="residential">Bungalows</button>
       <button class="type-chip" data-type="land">Farmhouses</button>
@@ -162,7 +162,7 @@
       <button class="type-chip" data-type="commercial">ATM Spaces</button>
       <button class="type-chip" data-type="industrial">Warehouses</button>
       <button class="type-chip" data-type="land">Agricultural Land</button>
-    </div>
+    </div></div>
   </section>
 
   <!-- Properties -->
@@ -173,7 +173,8 @@
         <h2>Properties available now</h2>
         <p id="resultCount">Showing all properties</p>
       </div>
-      <div class="grid props-grid" id="propsGrid"></div>
+      <div class="scroll-row props-grid" id="propsGrid"></div>
+      <p class="swipe-hint" id="propsHint">Swipe to see more →</p>
       <p class="empty" id="emptyMsg" hidden>No listed property matches right now — <a href="#contact">tell us what you need</a> and we'll find it for you.</p>
     </div>
   </section>
@@ -235,7 +236,7 @@
         <h2>Rated 4.7★ on Google</h2>
         <p>What our clients say about working with us.</p>
       </div>
-      <div class="grid reviews-grid">
+      <div class="scroll-row reviews-grid">
         <blockquote class="review">
           <div class="stars">★★★★★</div>
           <p>“Excellent service from Sinha Properties Solution. The team is professional, helpful, and responsive. They provide good property options and make the overall process smooth and easy. Highly recommended!”</p>
@@ -257,6 +258,7 @@
           <cite>Justdial user <small>· Justdial</small></cite>
         </blockquote>
       </div>
+      <p class="swipe-hint">Swipe for more reviews →</p>
       <div class="review-links">
         <a class="btn btn-gold" target="_blank" rel="noopener" href="https://www.google.com/maps/place/Sinha+Property+Solution/@25.6361533,85.1064571,17z/data=!4m6!3m5!1s0x39ed59a5750ae5c9:0x9965355cfa2ccc7a!8m2!3d25.6361533!4d85.1064571">Read all reviews on Google</a>
         <a class="btn btn-outline-light" target="_blank" rel="noopener" href="https://www.justdial.com/Patna/Sinha-Property-Solution-Near-Cisf-Boring-Road/0612PX612-X612-200820063014-L9G3_BZDET">View on Justdial</a>
@@ -342,7 +344,14 @@
     </div>
   </footer>
 
-  <!-- Floating actions -->
+  <!-- Mobile bottom action bar -->
+  <nav class="mobile-bar" aria-label="Quick contact">
+    <a href="tel:+919117555126"><span class="ico">📞</span>Call</a>
+    <a href="https://wa.me/919117555126" target="_blank" rel="noopener" class="wa"><span class="ico">💬</span>WhatsApp</a>
+    <a href="#contact" class="enq"><span class="ico">✉️</span>Enquire</a>
+  </nav>
+
+  <!-- Floating actions (desktop) -->
   <div class="float-actions">
     <a href="tel:+919117555126" class="fab call" aria-label="Call">📞</a>
     <a href="https://wa.me/919117555126" target="_blank" rel="noopener" class="fab wa" aria-label="WhatsApp">

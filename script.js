@@ -67,6 +67,9 @@ function render() {
       </article>`;
   }).join("");
 
+  grid.scrollLeft = 0;
+  grid.hidden = list.length === 0;
+  document.getElementById("propsHint").hidden = list.length < 2;
   document.getElementById("emptyMsg").hidden = list.length > 0;
   const parts = [];
   if (filters.deal !== "all") parts.push(DEAL_LABEL[filters.deal].toLowerCase());
@@ -128,8 +131,18 @@ document.getElementById("enquiryForm").addEventListener("submit", e => {
 
 // Mobile menu
 const nav = document.getElementById("nav");
-document.getElementById("menuBtn").addEventListener("click", () => nav.classList.toggle("open"));
-nav.querySelectorAll("a").forEach(a => a.addEventListener("click", () => nav.classList.remove("open")));
+const menuBtn = document.getElementById("menuBtn");
+function setMenu(open) {
+  nav.classList.toggle("open", open);
+  document.body.classList.toggle("menu-open", open);
+  menuBtn.textContent = open ? "✕" : "☰";
+  menuBtn.setAttribute("aria-expanded", open);
+  menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+}
+menuBtn.addEventListener("click", () => setMenu(!nav.classList.contains("open")));
+nav.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setMenu(false)));
+document.addEventListener("keydown", e => { if (e.key === "Escape") setMenu(false); });
+window.matchMedia("(min-width: 900px)").addEventListener("change", e => { if (e.matches) setMenu(false); });
 
 // Header shadow
 const header = document.getElementById("header");
