@@ -82,8 +82,17 @@
     .x { width:46px; height:46px; border:0; background:#f1f3f6; border-radius:10px; font-size:1.3rem; cursor:pointer; }
     .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .photo { display:grid; gap:10px; }
-    .preview { aspect-ratio:16/10; border-radius:12px; background:#eef1f5 center/cover no-repeat; display:grid; place-items:center; color:var(--muted); font-size:.9rem; border:1px dashed #cfd6de; }
-    .photo-btns { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .photo-head { display:flex; justify-content:space-between; align-items:baseline; gap:8px; color:var(--navy); }
+    .photos { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .photos:empty::before { content:"No photos yet"; grid-column:1 / -1; display:grid; place-items:center; aspect-ratio:16/7; border:1px dashed #cfd6de; border-radius:12px; color:var(--muted); font-size:.9rem; background:#f7f9fb; }
+    .ph { position:relative; aspect-ratio:1; border-radius:10px; background:#eef1f5 center/cover no-repeat; overflow:hidden; }
+    .ph .cover { position:absolute; left:4px; bottom:4px; background:var(--gold); color:#fff; font-size:.65rem; font-weight:700; padding:1px 6px; border-radius:5px; }
+    .ph button { position:absolute; width:32px; height:32px; border:0; border-radius:8px; background:rgba(15,42,68,.8); color:#fff; font-size:.9rem; cursor:pointer; display:grid; place-items:center; }
+    .ph .rm { top:4px; right:4px; }
+    .ph .first { top:4px; left:4px; }
+    .link-row { display:grid; grid-template-columns:1fr auto; gap:8px; }
+    .row3 { display:grid; grid-template-columns:1fr 1fr 1.3fr; gap:10px; }
+    .feat-star { color:var(--gold-2); }
     .file-btn { position:relative; overflow:hidden; }
     .file-btn input { position:absolute; inset:0; opacity:0; cursor:pointer; }
     .check { display:flex; align-items:center; gap:10px; font-weight:500; min-height:44px; }
@@ -96,6 +105,7 @@
     .toast.bad { background:var(--red); }
 
     @media (min-width:640px) {
+      .photos { grid-template-columns:repeat(4,1fr); }
       .filters { grid-template-columns:2fr 1fr 1fr; }
       .filters input { grid-column:auto; }
       .item { grid-template-columns:140px 1fr; }
@@ -168,13 +178,12 @@
       </div>
 
       <div class="photo">
-        <div class="preview" id="preview">No photo yet</div>
-        <div class="photo-btns">
-          <span class="btn btn-navy file-btn">📷 Take / choose photo<input type="file" id="file" accept="image/*" /></span>
-          <button type="button" class="btn btn-light" id="removePhoto">Remove photo</button>
-        </div>
+        <div class="photo-head"><b>Photos</b> <span class="hint" id="photoCount">0 / 10 · first photo is the cover</span></div>
+        <div class="photos" id="photos"></div>
+        <span class="btn btn-navy file-btn" id="addPhotoBtn">📷 Add photos<input type="file" id="file" accept="image/*" multiple /></span>
+        <p class="hint" id="uploadStatus" hidden></p>
         <label>…or paste a photo link <span class="hint">(optional)</span>
-          <input type="url" name="img" placeholder="https://…" />
+          <span class="link-row"><input type="url" id="imgLink" placeholder="https://…" /><button type="button" class="btn btn-light" id="addLink">Add</button></span>
         </label>
       </div>
 
@@ -201,9 +210,40 @@
           <select name="unit"><option value="/month">/month</option><option value="/year">/year</option><option value="">(total)</option></select>
         </label>
       </div>
-      <label>Features <span class="hint">— separate with commas, up to 6</span>
-        <input name="feats" maxlength="200" placeholder="2 Beds, 2 Baths, 1,050 sq ft, Parking" />
+      <div class="row3">
+        <label>BHK
+          <select name="bhk"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select>
+        </label>
+        <label>Baths
+          <select name="baths"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+        </label>
+        <label>Area (sq ft)
+          <input name="area" inputmode="numeric" maxlength="8" placeholder="1050" />
+        </label>
+      </div>
+      <div class="row2">
+        <label>Furnishing
+          <select name="furnishing"><option value="">—</option><option>Furnished</option><option>Semi-Furnished</option><option>Unfurnished</option></select>
+        </label>
+        <label>Facing
+          <select name="facing"><option value="">—</option><option>East</option><option>West</option><option>North</option><option>South</option><option>North-East</option><option>North-West</option><option>South-East</option><option>South-West</option></select>
+        </label>
+      </div>
+      <div class="row2">
+        <label>Floor
+          <input name="floor" maxlength="30" placeholder="3rd of 5 / Ground" />
+        </label>
+        <label>Parking
+          <input name="parking" maxlength="30" placeholder="1 Covered" />
+        </label>
+      </div>
+      <label>Description <span class="hint">(optional)</span>
+        <textarea name="desc" maxlength="1500" rows="4" placeholder="Nearby market, schools, road width, water/power, who it suits…"></textarea>
       </label>
+      <label>Amenities / highlights <span class="hint">— separate with commas, up to 8</span>
+        <input name="feats" maxlength="250" placeholder="Lift, Power backup, 24x7 water, Gated" />
+      </label>
+      <label class="check"><input type="checkbox" name="featured" /> ⭐ Featured (shown first, with a badge)</label>
       <label class="check"><input type="checkbox" name="hidden" /> Hide from website (e.g. already rented / sold)</label>
 
       <p class="err" id="formErr" hidden></p>
@@ -228,7 +268,8 @@
   try { key = sessionStorage.getItem("spAdminKey") || ""; } catch {}
   let props = [];
   let editingId = null;
-  let photoUrl = "";
+  let photos = [];          // photo URLs of the property being edited (first = cover)
+  const MAX_PHOTOS = 10;
 
   // ---------- helpers ----------
   async function api(path, opts = {}) {
@@ -285,10 +326,10 @@
 
     $("list").innerHTML = view.length ? view.map(p => `
       <article class="item ${p.hidden ? "is-hidden" : ""}">
-        <div class="thumb" style="background-image:url('${esc(p.img)}')"><span>${DEAL[p.deal]}</span></div>
+        <div class="thumb" style="background-image:url('${esc((p.imgs && p.imgs[0]) || p.img)}')"><span>${DEAL[p.deal]}</span></div>
         <div class="info">
-          <b>${esc(p.title)}</b>
-          <div class="meta">📍 ${esc(p.locality)} · ${TYPE[p.type]}</div>
+          <b>${p.featured ? '<span class="feat-star">⭐</span> ' : ""}${esc(p.title)}</b>
+          <div class="meta">📍 ${esc(p.locality)} · ${TYPE[p.type]}${p.bhk ? " · " + esc(p.bhk) + " BHK" : ""} · 📷 ${(p.imgs || [p.img]).filter(Boolean).length}</div>
           <div class="price">${esc(p.price)} <span class="meta">${esc(p.unit)}</span>${p.hidden ? '<span class="pill">Hidden</span>' : ""}</div>
         </div>
         <div class="actions">
@@ -321,12 +362,31 @@
 
   // ---------- editor ----------
   const form = $("editForm");
-  function setPreview(url) {
-    photoUrl = url || "";
-    const pv = $("preview");
-    pv.style.backgroundImage = photoUrl ? `url('${photoUrl.replace(/'/g, "%27")}')` : "";
-    pv.textContent = photoUrl ? "" : "No photo yet";
+  const FIELDS = ["bhk", "baths", "area", "furnishing", "facing", "floor", "parking", "desc"];
+
+  function renderPhotos() {
+    $("photos").innerHTML = photos.map((u, i) => `
+      <div class="ph" style="background-image:url('${esc(u).replace(/'/g, "%27")}')">
+        ${i === 0 ? '<span class="cover">Cover</span>' : `<button type="button" class="first" data-i="${i}" title="Make cover" aria-label="Make cover photo">★</button>`}
+        <button type="button" class="rm" data-i="${i}" title="Remove" aria-label="Remove photo">✕</button>
+      </div>`).join("");
+    $("photoCount").textContent = `${photos.length} / ${MAX_PHOTOS} · first photo is the cover`;
+    $("addPhotoBtn").hidden = photos.length >= MAX_PHOTOS;
   }
+  $("photos").addEventListener("click", e => {
+    const b = e.target.closest("button[data-i]"); if (!b) return;
+    const i = +b.dataset.i;
+    if (b.classList.contains("rm")) photos.splice(i, 1);
+    else photos.unshift(photos.splice(i, 1)[0]);
+    renderPhotos();
+  });
+  $("addLink").addEventListener("click", () => {
+    const u = $("imgLink").value.trim();
+    if (!/^https:\/\//.test(u)) return toast("Paste a link that starts with https://", "bad");
+    if (photos.length >= MAX_PHOTOS) return toast(`Max ${MAX_PHOTOS} photos`, "bad");
+    photos.push(u); $("imgLink").value = ""; renderPhotos();
+  });
+
   function openSheet(p) {
     editingId = p ? p.id : null;
     $("sheetTitle").textContent = p ? "Edit Property" : "Add Property";
@@ -335,12 +395,15 @@
     form.deal.value = p?.deal || "rent";
     form.type.value = p?.type || "residential";
     form.locality.value = p?.locality || "";
-    form.price.value = p?.price || "";
+    form.price.value = p?.price && p.price !== "On request" ? p.price : "";
     form.unit.value = p ? (p.unit || "") : "/month";
+    FIELDS.forEach(f => form[f].value = p?.[f] || "");
     form.feats.value = (p?.feats || []).join(", ");
+    form.featured.checked = !!p?.featured;
     form.hidden.checked = !!p?.hidden;
-    form.img.value = "";
-    setPreview(p?.img || "");
+    photos = p ? [...(p.imgs && p.imgs.length ? p.imgs : (p.img ? [p.img] : []))] : [];
+    renderPhotos();
+    $("uploadStatus").hidden = true;
     const locs = [...new Set([...BASE_LOCALITIES, ...props.map(x => x.locality)])];
     $("localities").innerHTML = locs.map(l => `<option value="${esc(l)}">`).join("");
     $("sheetBg").hidden = false; document.body.style.overflow = "hidden";
@@ -355,20 +418,24 @@
   // Deal type sets a sensible price unit
   form.deal.addEventListener("change", () => { form.unit.value = form.deal.value === "buy" ? "" : "/month"; });
 
-  form.img.addEventListener("input", () => { if (/^https:\/\//.test(form.img.value.trim())) setPreview(form.img.value.trim()); });
-  $("removePhoto").addEventListener("click", () => { form.img.value = ""; setPreview(""); $("file").value = ""; });
-
-  // Resize photo in the browser (max 1400px, JPEG) then upload
+  // Resize each photo in the browser (max 1400px, JPEG) then upload, one by one
   $("file").addEventListener("change", async () => {
-    const f = $("file").files[0]; if (!f) return;
-    const pv = $("preview"); pv.textContent = "Uploading photo…"; pv.style.backgroundImage = "";
+    const files = [...$("file").files].slice(0, MAX_PHOTOS - photos.length);
+    $("file").value = "";
+    if (!files.length) return;
+    const st = $("uploadStatus"); st.hidden = false;
     $("saveBtn").disabled = true;
-    try {
-      const data = await resizeImage(f, 1400, 0.82);
-      const { url } = await api("/api/upload", { method: "POST", body: JSON.stringify({ data }) });
-      form.img.value = ""; setPreview(url); toast("Photo uploaded");
-    } catch (err) { setPreview(photoUrl); toast(err.message || "Could not read this photo", "bad"); }
-    finally { $("saveBtn").disabled = false; $("file").value = ""; }
+    let ok = 0;
+    for (let i = 0; i < files.length; i++) {
+      st.textContent = `Uploading photo ${i + 1} of ${files.length}…`;
+      try {
+        const data = await resizeImage(files[i], 1400, 0.82);
+        const { url } = await api("/api/upload", { method: "POST", body: JSON.stringify({ data }) });
+        photos.push(url); ok++; renderPhotos();
+      } catch (err) { toast(err.message || "Could not read a photo", "bad"); }
+    }
+    st.hidden = true; $("saveBtn").disabled = false;
+    if (ok) toast(ok === 1 ? "Photo uploaded" : `${ok} photos uploaded`);
   });
   function resizeImage(file, max, quality) {
     return new Promise((resolve, reject) => {
@@ -390,15 +457,20 @@
     e.preventDefault();
     const title = form.title.value.trim(), locality = form.locality.value.trim();
     if (!title || !locality) return showErr($("formErr"), "Please fill in Title and Locality.");
+    const old = editingId ? props.find(p => p.id === editingId) : null;
+    const priceText = form.price.value.trim();
     const item = {
       id: editingId || Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       title, locality,
       deal: form.deal.value, type: form.type.value,
-      price: form.price.value.trim() || "On request",
-      unit: form.price.value.trim() && !/request/i.test(form.price.value) ? form.unit.value : "",
-      feats: form.feats.value.split(",").map(s => s.trim()).filter(Boolean).slice(0, 6),
-      img: photoUrl, hidden: form.hidden.checked,
+      price: priceText || "On request",
+      unit: priceText && !/request/i.test(priceText) ? form.unit.value : "",
+      feats: form.feats.value.split(",").map(s => s.trim()).filter(Boolean).slice(0, 8),
+      imgs: photos.slice(), img: photos[0] || "",
+      featured: form.featured.checked, hidden: form.hidden.checked,
+      created: old?.created || Date.now(),
     };
+    FIELDS.forEach(f => item[f] = form[f].value.trim());
     const next = editingId ? props.map(p => p.id === editingId ? item : p) : [item, ...props];
     const btn = $("saveBtn"); btn.disabled = true; btn.textContent = "Saving…";
     const ok = await save(next, editingId ? "Property updated" : "Property added to website");

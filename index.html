@@ -53,11 +53,11 @@
         </span>
       </a>
       <nav class="nav" id="nav">
-        <a href="#home">Home</a>
-        <a href="#services">Services</a>
         <a href="#properties">Properties</a>
-        <a href="#why">Why Us</a>
+        <a href="#services">Services</a>
+        <a href="#emi">EMI Calculator</a>
         <a href="#reviews">Reviews</a>
+        <a href="#faq">FAQ</a>
         <a href="#contact">Contact</a>
         <a href="#contact" class="btn btn-gold btn-sm nav-cta">Free Consultation</a>
       </nav>
@@ -173,6 +173,28 @@
         <h2>Properties available now</h2>
         <p id="resultCount">Showing all properties</p>
       </div>
+      <div class="list-tools">
+        <div class="scroll-row chip-row" id="bhkChips" role="group" aria-label="Filter by BHK">
+          <button type="button" class="chip active" data-bhk="">Any BHK</button>
+          <button type="button" class="chip" data-bhk="1">1 BHK</button>
+          <button type="button" class="chip" data-bhk="2">2 BHK</button>
+          <button type="button" class="chip" data-bhk="3">3 BHK</button>
+          <button type="button" class="chip" data-bhk="4">4+ BHK</button>
+        </div>
+        <div class="tool-row">
+          <label class="sr-only" for="fBudget">Budget</label>
+          <select id="fBudget"></select>
+          <label class="sr-only" for="fSort">Sort by</label>
+          <select id="fSort">
+            <option value="featured">Sort: Featured</option>
+            <option value="new">Sort: Newest</option>
+            <option value="low">Price: Low to High</option>
+            <option value="high">Price: High to Low</option>
+          </select>
+          <button type="button" class="saved-toggle" id="savedBtn" aria-pressed="false">♡ Saved <span id="savedCount">0</span></button>
+        </div>
+        <button type="button" class="clear-filters" id="clearFilters" hidden>✕ Clear all filters</button>
+      </div>
       <div class="scroll-row props-grid" id="propsGrid"></div>
       <p class="swipe-hint" id="propsHint">Swipe to see more →</p>
       <p class="empty" id="emptyMsg" hidden>No listed property matches right now — <a href="#contact">tell us what you need</a> and we'll find it for you.</p>
@@ -213,6 +235,45 @@
         <div class="step"><span>2</span><h3>Get shortlisted options</h3><p>We share verified properties that actually match.</p></div>
         <div class="step"><span>3</span><h3>Site visit</h3><p>We take you to the properties at a time that suits you.</p></div>
         <div class="step"><span>4</span><h3>Deal &amp; paperwork</h3><p>Negotiation, agreement and smooth handover.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMI calculator -->
+  <section class="section" id="emi">
+    <div class="container emi">
+      <div class="emi-intro">
+        <p class="eyebrow dark">Planning to buy?</p>
+        <h2>Home loan EMI calculator</h2>
+        <p>Check your monthly EMI before you shortlist. Move the sliders or type the numbers.</p>
+        <a class="btn btn-navy" id="emiWhatsApp" href="https://wa.me/919117555126" target="_blank" rel="noopener">Find property in this budget</a>
+      </div>
+      <div class="card emi-card">
+        <div class="emi-field">
+          <div class="emi-label"><label for="emiAmt">Loan amount</label><span>₹ <input id="emiAmtN" inputmode="numeric" aria-label="Loan amount in rupees" /></span></div>
+          <input type="range" id="emiAmt" min="500000" max="20000000" step="100000" value="5000000" />
+          <div class="emi-scale"><span>₹5 L</span><span>₹2 Cr</span></div>
+        </div>
+        <div class="emi-field">
+          <div class="emi-label"><label for="emiRate">Interest rate</label><span><input id="emiRateN" inputmode="decimal" aria-label="Interest rate percent" /> %</span></div>
+          <input type="range" id="emiRate" min="6" max="15" step="0.05" value="8.5" />
+          <div class="emi-scale"><span>6%</span><span>15%</span></div>
+        </div>
+        <div class="emi-field">
+          <div class="emi-label"><label for="emiYrs">Tenure</label><span><input id="emiYrsN" inputmode="numeric" aria-label="Tenure in years" /> years</span></div>
+          <input type="range" id="emiYrs" min="1" max="30" step="1" value="20" />
+          <div class="emi-scale"><span>1 yr</span><span>30 yrs</span></div>
+        </div>
+        <div class="emi-result">
+          <div class="emi-main"><span>Monthly EMI</span><strong id="emiOut">—</strong></div>
+          <div class="emi-bar" aria-hidden="true"><i id="emiBarP"></i></div>
+          <div class="emi-split">
+            <div><i class="dot p"></i>Principal <b id="emiP">—</b></div>
+            <div><i class="dot i"></i>Interest <b id="emiI">—</b></div>
+            <div>Total payable <b id="emiT">—</b></div>
+          </div>
+          <p class="emi-note">Estimate only. Your bank's final rate and charges may differ.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -274,6 +335,42 @@
         <p>Rent it out or sell it faster with verified tenants and buyers.</p>
       </div>
       <a class="btn btn-gold" href="https://wa.me/919117555126?text=Hi%2C%20I%20want%20to%20list%20my%20property%20with%20Sinha%20Property%20Solution." target="_blank" rel="noopener">List Your Property</a>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section alt" id="faq">
+    <div class="container faq-wrap">
+      <div class="section-head">
+        <p class="eyebrow dark">Questions</p>
+        <h2>Frequently asked questions</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>What kind of properties do you deal in?</summary>
+          <p>Residential flats, independent houses, bungalows and farmhouses; commercial shops, showrooms, offices and ATM spaces; plots and agricultural land; and warehouses and industrial spaces — for rent, lease or sale.</p>
+        </details>
+        <details>
+          <summary>Which areas of Patna do you cover?</summary>
+          <p>Our office is near CISF, Boring Road (Kurji). We regularly work around Boring Road, Kurji, Patliputra Colony, Rajendra Nagar, Fraser Road, Bailey Road, Kankarbagh, Ashiana Nagar, Raja Bazar, Danapur and Bihta. Ask us about other areas too.</p>
+        </details>
+        <details>
+          <summary>How do I book a site visit?</summary>
+          <p>Open any property and tap <b>Schedule a visit</b>, pick a date and time, and send it to us on WhatsApp. Or simply call +91 91175 55126.</p>
+        </details>
+        <details>
+          <summary>I own a property. Can you find a tenant or buyer?</summary>
+          <p>Yes. Tap <b>List Your Property</b> or WhatsApp us the details and photos. We'll share it with people looking for exactly that kind of property.</p>
+        </details>
+        <details>
+          <summary>Can I save properties and compare later?</summary>
+          <p>Yes. Tap the ♡ on any property to save it on your phone, then use the <b>Saved</b> button in the listings to see only your shortlist.</p>
+        </details>
+        <details>
+          <summary>What are your office timings?</summary>
+          <p>Our office opens at 8:00 AM. Call or WhatsApp us before visiting so we can make sure the right person is available.</p>
+        </details>
+      </div>
     </div>
   </section>
 
@@ -343,6 +440,31 @@
       <span>© <span id="year"></span> Sinha Property Solution. All rights reserved.</span> <a href="/admin" style="opacity:.6;margin-left:8px">Admin</a>
     </div>
   </footer>
+
+  <!-- Property detail -->
+  <div class="pd-bg" id="pd" hidden role="dialog" aria-modal="true" aria-labelledby="pdTitle">
+    <article class="pd">
+      <header class="pd-top">
+        <button type="button" class="pd-icon" id="pdClose" aria-label="Close">←</button>
+        <span class="pd-top-title" id="pdTopTitle"></span>
+        <button type="button" class="pd-icon" id="pdShare" aria-label="Share this property">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+        </button>
+        <button type="button" class="pd-icon pd-save" id="pdSave" aria-label="Save property" aria-pressed="false">♡</button>
+      </header>
+      <div class="pd-gallery">
+        <div class="pd-track" id="pdTrack"></div>
+        <button type="button" class="pd-nav prev" id="pdPrev" aria-label="Previous photo">‹</button>
+        <button type="button" class="pd-nav next" id="pdNext" aria-label="Next photo">›</button>
+        <span class="pd-count" id="pdCount"></span>
+      </div>
+      <div class="pd-body" id="pdBody"></div>
+      <footer class="pd-foot">
+        <a class="btn pd-call" id="pdCall" href="tel:+919117555126">Call</a>
+        <a class="btn pd-wa" id="pdWa" target="_blank" rel="noopener" href="#">WhatsApp</a>
+      </footer>
+    </article>
+  </div>
 
   <!-- Mobile bottom action bar -->
   <nav class="mobile-bar" id="mobileBar" aria-label="Quick contact">

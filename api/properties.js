@@ -30,8 +30,8 @@ export default async function handler(req, res) {
       await writeProperties(next);
 
       // Remove photos we uploaded that are no longer used by any property.
-      const used = new Set(next.map(p => p.img));
-      const orphaned = prev.map(p => p.img).filter(u => u && !used.has(u) && u.includes(".blob.vercel-storage.com/images/"));
+      const used = new Set(next.flatMap(p => p.imgs || [p.img]));
+      const orphaned = [...new Set(prev.flatMap(p => p.imgs || [p.img]))].filter(u => u && !used.has(u) && u.includes(".blob.vercel-storage.com/images/"));
       if (orphaned.length) await del(orphaned).catch(() => {});
 
       return res.status(200).json(next);
